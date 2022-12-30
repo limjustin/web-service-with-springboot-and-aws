@@ -15,16 +15,19 @@ public class PostsApiController {
 
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto) {
+        // DTO : PostsSaveRequestDto
         return postsService.save(requestDto);
     }
 
     @PutMapping("/api/v1/posts/{id}")
     public Long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestDto) {
+        // DTO : PostsUpdateRequestDto
         return postsService.update(id, requestDto);
     }
 
     @GetMapping("/api/v1/posts/{id}")
     public PostsResponseDto findById(@PathVariable Long id) {
+        // DTO : PostsResponseDto
         return postsService.findById(id);
     }
 

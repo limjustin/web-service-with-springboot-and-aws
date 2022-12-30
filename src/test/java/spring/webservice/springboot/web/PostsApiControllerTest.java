@@ -38,7 +38,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void Posts_등록된다() throws Exception {
+    public void 등록() throws Exception {
         // given
         String title = "title";
         String content = "content";
@@ -46,12 +46,14 @@ public class PostsApiControllerTest {
                 .title(title)
                 .content(content)
                 .author("author")
-                .build();
+                .build();  // 저장할 때 사용하는 DTO
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
         // when
+        // (requestDto, responseEntity)
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+        System.out.println("등록 responseEntity = " + responseEntity);
 
         // then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -63,29 +65,33 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void Posts_수정된다() throws Exception {
+    public void 수정() throws Exception {
         // given
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
                 .author("author")
-                .build());
+                .build());  // '저장된' 정보를 가져오는 테스트 -> Repo.save 이유
 
         Long updateId = savedPosts.getId();
+        System.out.println("updateId = " + updateId);
         String expectedTitle = "title2";
         String expectedContent = "content2";
 
         PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
                 .title(expectedTitle)
                 .content(expectedContent)
-                .build();
+                .build();  // 조회할 때 사용하는 DTO
 
         String url = "http://localhost:" + port + "/api/v1/posts/" + updateId;
 
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        System.out.println("requestEntity = " + requestEntity);  // PostsUpdateRequestDto
 
         // when
+        // (requestEntity, responseEntity)
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
+        System.out.println("수정 responseEntity = " + responseEntity);
 
         // then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
